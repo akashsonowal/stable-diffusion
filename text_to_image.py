@@ -20,7 +20,18 @@ class Text2Img:
       self.sampler = DDIMSampler(self.model, n_steps=n_steps, ddim_eta=ddim_eta)
     elif sampler_name == "ddpm":
       self.sampler = DDPMSampler(self.model)
- 
+  
+  def __call__(self, *, dest_path: str, batch_size: int = 3, prompt: str, h: int = 512, w: int = 512, uncond_scale: float = 7.5):
+    c = 4 # channels in a image
+    f = 8 # image to latent space resolution reduction
+    prompts = batch_size * [prompt]
+    
+    with torch.cuda.amp.autocast():
+      if uncond_scale != 1:
+        un_cond = self.model.get_text_conditioning(batch_size * [""])
+      else:
+        un_cond = None
+        
 def main():
   parser = argparse.ArgumentParser()
   parser.add_argument()
