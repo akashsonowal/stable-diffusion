@@ -54,7 +54,7 @@ def main():
   args = parser.parse_args()
   set_seed(42)
   
-  checkpoints = Path("/checkpoints")
+  checkpoints = Path("/checkpoints/")
   
   from stable_diffusion.models.unet_attention import CrossAttention
   CrossAttention.use_flash_attention = args.flash
