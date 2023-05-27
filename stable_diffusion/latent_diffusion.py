@@ -31,6 +31,20 @@ class LatentDiffusion(nn.Module):
     alpha = 1. - beta
     alpha_bar = torch.cumprod(alpha,  dim=0)
     self.alpha_bar = nn.Parameter(alpha_bar.to(torch.float32), requires_grad=False)
+    
+  @property
+  def device(self):
+    return next(iter(self.model.parameters()).device
+  
+  def get_text_conditioning(self, prompts: List(str)):
+    return self.cond_stage_model(prompts)
+  
+  def autoencoder_encode(self, image: torch.Tensor):
+    """The encoder output is a distribution and we sample from that"""
+    return self.latent_scaling_factor * self.first_stage_model.encode(image).sample()
+  
+  def autoencoder_decode(self, z: torch.Tensor):
+    return self.first_stage_model.decode(z / self.latent_scaling_factor)
   
   def forward(self, x: torch.Tensor, t: torch.Tensor, context: torch.Tensor):
     """Predict noise given the latent representations x, time step t and conditioning context c"""
