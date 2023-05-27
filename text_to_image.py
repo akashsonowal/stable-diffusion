@@ -28,9 +28,17 @@ class Text2Img:
     
     with torch.cuda.amp.autocast():
       if uncond_scale != 1:
-        un_cond = self.model.get_text_conditioning(batch_size * [""])
+        un_cond = self.model.get_text_conditioning(batch_size * [""]) # empty string
       else:
         un_cond = None
+        
+      cond = self.model.get_text_conditioning(prompts)
+
+      x = self.sampler.sample(cond=cond, shape=(batch_size, c, h // f, w //f), uncond_scale, uncond_cond=un_cond)
+      images = self.model.autoencoder_decode(x)
+      
+    save_images(images, dest_path, "txt_")
+    
         
 def main():
   parser = argparse.ArgumentParser()
