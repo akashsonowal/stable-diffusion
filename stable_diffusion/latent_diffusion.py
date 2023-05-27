@@ -24,6 +24,13 @@ class LatentDiffusion(nn.Module):
     super().__init__()
     self.first_stage_model = autoencoder
     self.model = DiffusionWrapper(unet_model)
+    self.cond_stage_model = clip_embedder
+    self.n_steps = steps
+    beta = torch.linspace(linear_start**0.5, linear_end**0.5, n_steps, dtype=torch.float64)**2
+    self.beta = nn.Parameter(beta.to(torch.float32), requires_grad=False)
+    alpha = 1. - beta
+    alpha_bar = torch.cumprod(alpha,  dim=0)
+    self.alpha_bar = nn.Parameter(alpha_bar.to(torch.float32), requires_grad=False)
   
   def forward(self, x: torch.Tensor, t: torch.Tensor, context: torch.Tensor):
     """Predict noise given the latent representations x, time step t and conditioning context c"""
