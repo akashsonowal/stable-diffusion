@@ -42,10 +42,26 @@ class Text2Img:
         
 def main():
   parser = argparse.ArgumentParser()
-  parser.add_argument()
+  parser.add_argument("--prompt", type=str, nargs="?", default="a painting of a virus monster playing guitar", help="The prompt to render")
+  parser.add_argument("--batch_size", type=int, default=4, help="batch size")
+  parser.add_argument("--sampler", dest="sampler_name", choices=["ddim", "ddpm"], default="ddim", help=f"Set the sampler")
+  
+  parser.add_argument("--flash", action="store_true", help="whether to use flash attention")
+  parser.add_argument("--steps", type=int, default=50, help="number of sampling steps")
+  parser.add_argument("--scale", type=float, default=7.5, help="unconditional guidance scale: ", help="unconditional guidance scale: ", 
+                      "eps = eps(x, empty) + scale * (eps(x, cond) - eps(x, empty))"
   
   args = parser.parse_args()
   set_seed(42)
+  
+  checkpoints = Path("/checkpoints")
+  
+  from stable_diffusion.models.unet_attention import CrossAttention
+  CrossAttention.use_flash_attention = args.flash
+  
+  
+  txt2img = Txt2Img(checkpoint_path=checkpoints / "sd-v1-4.ckpt", sampler_name=args.sampler_name, n_steps=args.steps)
+  txt2img(dest_path="outputs", batch_size=args.batch_size, prompt=args.prompt, uncond_scale=args.scale) 
    
 if __name__ == "__main__":
   main()
