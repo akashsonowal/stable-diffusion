@@ -1,19 +1,18 @@
 import argparse
-import os
 from pathlib import Path
+from typing import Optional
 
 import torch
 
 from stable_diffusion.latent_diffusion import LatentDiffusion
 from stable_diffusion.sampler.ddim import DDIMSampler
-from stable_diffusion.sampler.ddpm import DDPMSampler
-from stable_diffusion.util import load_model, save_images, set_seed
+from stable_diffusion.util import load_model, save_images, load_img, set_seed
 
-class Text2Img:
+class InPaint:
   model: LatentDiffusion
   sampler: DiffusionSampler
   
-  def __init__(self, checkpoint_path: Path, sampler_name: str, n_steps: int = 50, ddim_eta: float = 0.0):
+  def __init__(self, checkpoint_path: Path, ddim_steps: int = 50, ddim_eta: float = 0.0): 
     self.model = load_model(checkpoint_path)
     self.device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
     self.model.to(self.device)
