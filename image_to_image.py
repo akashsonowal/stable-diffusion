@@ -42,11 +42,11 @@ class Img2Img:
         
 def main():
   parser = argparse.ArgumentParser()
-  parser.add_argument("--prompt", type=str, nargs="?", default="a painting of a virus monster playing guitar", help="The prompt to render")
+  parser.add_argument("--prompt", type=str, nargs="?", default="a painting of a cute monkey playing guitar", help="The prompt to render")
   parser.add_argumnet("--orig_img", type=str, nargs="?", help="path to the imput image")
   parser.add_argument("--batch_size", type=int, default=4, help="batch size")
   parser.add_argument("--steps", type=int, default=50, help="number of sampling steps")
-  parser.add_argument("--scale", type=float, default=7.5, help="unconditional guidance scale: ", help="unconditional guidance scale: ", 
+  parser.add_argument("--scale", type=float, default=5.0, help="unconditional guidance scale: ", help="unconditional guidance scale: ", 
                       "eps = eps(x, empty) + scale * (eps(x, cond) - eps(x, empty))")
   parser.add_argumnet("--strength", type=float, default=0.75, help="strength for noise: ", "1.0 corresponds to full destruction of init image.")
  
@@ -55,8 +55,8 @@ def main():
   
   checkpoints = Path("/checkpoints/")
   
-  in_paint = InPaint(checkpoint_path=checkpoints / "sd-v1-4.ckpt", ddim_steps=args.steps)
-  txt2img(dest_path="outputs", orig_img=args.orig_img, strength=args.strength, batch_size=args.batch_size, prompt=args.prompt, uncond_scale=args.scale) 
+  img_2_img = Img2Img(checkpoint_path=checkpoints / "sd-v1-4.ckpt", ddim_steps=args.steps)
+  img_2_img(dest_path="outputs", orig_img=args.orig_img, strength=args.strength, batch_size=args.batch_size, prompt=args.prompt, uncond_scale=args.scale) 
    
 if __name__ == "__main__":
   main()
