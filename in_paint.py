@@ -26,6 +26,10 @@ class InPaint:
     orig = self.model.autoencoder_encode(orig_image).repeat(batch_size, 1, 1, 1)
     
     if mask is None:
+      mask = torch.zeros_like(orig, device=self.device)
+      mask[:, :, mask.shape[2] // 2, :] = 1.
+    else:
+      mask = mask.to(self.device)
       
     
     with torch.cuda.amp.autocast():
