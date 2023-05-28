@@ -13,13 +13,11 @@ class InPaint:
   sampler: DiffusionSampler
   
   def __init__(self, checkpoint_path: Path, ddim_steps: int = 50, ddim_eta: float = 0.0): 
+    self.ddim_steps = ddim_steps
     self.model = load_model(checkpoint_path)
     self.device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
     self.model.to(self.device)
-    if sampler_name == "ddim":
-      self.sampler = DDIMSampler(self.model, n_steps=n_steps, ddim_eta=ddim_eta)
-    elif sampler_name == "ddpm":
-      self.sampler = DDPMSampler(self.model)
+    self.sampler = DDIMSampler(self.model, n_steps=n_steps, ddim_eta=ddim_eta)
   
   def __call__(self, *, dest_path: str, batch_size: int = 3, prompt: str, h: int = 512, w: int = 512, uncond_scale: float = 7.5):
     c = 4 # channels in a image
