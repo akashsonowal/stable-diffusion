@@ -44,10 +44,11 @@ class InPaint:
         
       cond = self.model.get_text_conditioning(prompts)
 
-      x = self.sampler.sample(cond=cond, shape=(batch_size, c, h // f, w //f), uncond_scale, uncond_cond=un_cond)
+      x = self.sampler.q_sample(orig, t_index, noise=orig_noise)
+      x = self.sampler.paint(x, cond, t_index, orig=orig, mask=mask, orig_noise=orig_noise, uncond_scale, uncond_cond=un_cond)
       images = self.model.autoencoder_decode(x)
       
-    save_images(images, dest_path, "txt_")
+    save_images(images, dest_path, "paint_")
     
         
 def main():
