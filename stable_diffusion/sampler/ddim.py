@@ -36,7 +36,7 @@ class DDIMSampler(DiffusionSampler):
       bs = shape[0]
       x = x_last if x_last is not None alse torch.randn(shape, device=device)
                                         
-      time_steps = np.flip(self.time_steps)[skip_steps:]
+      time_steps = np.flip(self.time_steps)[skip_steps:] # S-i, S-i-1, ....1
       for i, step in enumerate(time_steps):
         index = len(time_steps) - i - 1 # time: 1, 2, 3, ..., S
         ts = x.new_full((bs,), step, dtype=torch.long) # the size is bs and is filled with the step value 
