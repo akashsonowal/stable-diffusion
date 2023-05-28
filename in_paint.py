@@ -54,25 +54,20 @@ class InPaint:
 def main():
   parser = argparse.ArgumentParser()
   parser.add_argument("--prompt", type=str, nargs="?", default="a painting of a virus monster playing guitar", help="The prompt to render")
+  parser.add_argumnet("--orig_img", type=str, nargs="?", help="path to the imput image")
   parser.add_argument("--batch_size", type=int, default=4, help="batch size")
-  parser.add_argument("--sampler", dest="sampler_name", choices=["ddim", "ddpm"], default="ddim", help=f"Set the sampler")
-  
-  parser.add_argument("--flash", action="store_true", help="whether to use flash attention")
   parser.add_argument("--steps", type=int, default=50, help="number of sampling steps")
   parser.add_argument("--scale", type=float, default=7.5, help="unconditional guidance scale: ", help="unconditional guidance scale: ", 
-                      "eps = eps(x, empty) + scale * (eps(x, cond) - eps(x, empty))"
-  
+                      "eps = eps(x, empty) + scale * (eps(x, cond) - eps(x, empty))")
+  parser.add_argumnet("--strength", type=float, default=0.75, help="strength for noise: ", "1.0 corresponds to full destruction of init image.")
+ 
   args = parser.parse_args()
   set_seed(42)
   
   checkpoints = Path("/checkpoints/")
   
-  from stable_diffusion.models.unet_attention import CrossAttention
-  CrossAttention.use_flash_attention = args.flash
-  
-  
-  txt2img = Txt2Img(checkpoint_path=checkpoints / "sd-v1-4.ckpt", sampler_name=args.sampler_name, n_steps=args.steps)
-  txt2img(dest_path="outputs", batch_size=args.batch_size, prompt=args.prompt, uncond_scale=args.scale) 
+  in_paint = InPaint(checkpoint_path=checkpoints / "sd-v1-4.ckpt", ddim_steps=args.steps)
+  txt2img(dest_path="outputs", orig_img=args.orig_img, strength=args.strength, batch_size=args.batch_size, prompt=args.prompt, uncond_scale=args.scale) 
    
 if __name__ == "__main__":
   main()
