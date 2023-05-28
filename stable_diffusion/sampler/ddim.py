@@ -75,6 +75,12 @@ class DDIMSampler(DiffusionSampler):
      noise = noise * temperature
      x_prev = (alpha_prev ** 0.5) * pred_x0 + dir_xt + sigma * noise
      return x_prev, pred_x0
-     
-                                        
-                                        
+   
+   @torch.no_grad()
+   def q_sample(self, x: torch.Tensor, index: int, noise: Optional[torch.Tensor] = None):
+      pass
+   
+   @torch.no_grad()
+   def paint(self, x: torch.Tensor, cond: torch.Tensor, t_start: int, *, orig: Optional[torch.Tensor] = None, mask: Optional[torch.Tensor] = None, orig_noise: Optional[torch.Tensor] = None, uncond_scale: float = 1., uncond_cond: Optional[torch.Tensor] = None):
+      pass                              
+                                       
