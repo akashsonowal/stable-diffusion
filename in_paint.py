@@ -20,10 +20,13 @@ class InPaint:
     self.sampler = DDIMSampler(self.model, n_steps=n_steps, ddim_eta=ddim_eta)
   
   @torch.no_grad()
-  def __call__(self, *, dest_path: str, orig_img: str, batch_size: int = 3, prompt: str, h: int = 512, w: int = 512, uncond_scale: float = 7.5):
-    c = 4 # channels in a image
-    f = 8 # image to latent space resolution reduction
+  def __call__(self, *, dest_path: str, orig_img: str, strength: float, batch_size: int = 3, prompt: str, uncond_scale: float = 7.5, mask: Optional[torch.Tensor] = None):
     prompts = batch_size * [prompt]
+    orig_image = load_img(orig_img).to(self.device)
+    orig = self.model.autoencoder_encode(orig_image).repeat(batch_size, 1, 1, 1)
+    
+    if mask is None:
+      
     
     with torch.cuda.amp.autocast():
       if uncond_scale != 1:
