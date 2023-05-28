@@ -19,7 +19,8 @@ class InPaint:
     self.model.to(self.device)
     self.sampler = DDIMSampler(self.model, n_steps=n_steps, ddim_eta=ddim_eta)
   
-  def __call__(self, *, dest_path: str, batch_size: int = 3, prompt: str, h: int = 512, w: int = 512, uncond_scale: float = 7.5):
+  @torch.no_grad()
+  def __call__(self, *, dest_path: str, orig_img: str, batch_size: int = 3, prompt: str, h: int = 512, w: int = 512, uncond_scale: float = 7.5):
     c = 4 # channels in a image
     f = 8 # image to latent space resolution reduction
     prompts = batch_size * [prompt]
