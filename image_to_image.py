@@ -22,14 +22,6 @@ class Img2Img:
     orig_image = load_img(orig_img).to(self.device)
     orig = self.model.autoencoder_encode(orig_image).repeat(batch_size, 1, 1, 1)
     
-    if mask is None:
-      mask = torch.zeros_like(orig, device=self.device)
-      mask[:, :, mask.shape[2] // 2, :] = 1. # preserve the bottom half of the image
-    else:
-      mask = mask.to(self.device)
-    
-    orig_noise = torch.randn(orig.shape, device=self.device)
-    
     assert 0. <= strength <= 1., "can only work with strength in (0.0, 1.0)"
     t_index = int(strength * self.ddim_steps)
     
@@ -41,11 +33,11 @@ class Img2Img:
         
       cond = self.model.get_text_conditioning(prompts)
 
-      x = self.sampler.q_sample(orig, t_index, noise=orig_noise)
-      x = self.sampler.paint(x, cond, t_index, orig=orig, mask=mask, orig_noise=orig_noise, uncond_scale, uncond_cond=un_cond)
+      x = self.sampler.q_sample(orig, t_index)
+      x = self.sampler.paint(x, cond, t_index, uncond_scale=uncond_scale, uncond_cond=un_cond)
       images = self.model.autoencoder_decode(x)
       
-    save_images(images, dest_path, "paint_")
+    save_images(images, dest_path, "img_")
     
         
 def main():
