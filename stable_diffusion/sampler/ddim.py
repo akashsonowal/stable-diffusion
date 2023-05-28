@@ -78,7 +78,9 @@ class DDIMSampler(DiffusionSampler):
    
    @torch.no_grad()
    def q_sample(self, x: torch.Tensor, index: int, noise: Optional[torch.Tensor] = None):
-      pass
+      if noise is None:
+        noise = torch.randn_like(x0)
+      return self.ddim_alpha_sqrt(index) * x0 + self.ddim_sqrt_one_minus_alpha(index) * noise 
    
    @torch.no_grad()
    def paint(self, x: torch.Tensor, cond: torch.Tensor, t_start: int, *, orig: Optional[torch.Tensor] = None, mask: Optional[torch.Tensor] = None, orig_noise: Optional[torch.Tensor] = None, uncond_scale: float = 1., uncond_cond: Optional[torch.Tensor] = None):
