@@ -38,7 +38,31 @@ class DDIMSampler(DiffusionSampler):
 
     time_steps = np.flip(self.time_steps)[skip_steps:] # S-i, S-i-1, ....1
     for i, step in enumerate(time_steps):
-      index = len(time_steps) - i - 1 # time: 1, 2, 3, ..., S
+      index = len(time_steps) - i - 1 
       ts = x.new_full((bs,), step, dtype=torch.long) # the size is bs and is filled with the step value 
       x, pred_x0. e_t = self.p_sample(x, cond, ts, step, index=index, repeat_noise=repeat_noise, temperature=temperature, uncond_scale=uncond_scale, uncond_cond=uncond_cond)
     return x
+  
+  @torch.no_grad()
+  def p_sample(self, x: torch.Tensor, c: torch.Tensor, t: torch.Tensor, step: int, index: int, repeat_noise: bool = False, temperature: float = 1., uncond_scale: float = 1., uncond_cond: Optional[torch.Tensor] = None):
+     """
+     x is of shape (bs, c, h, w)
+     c is of shape (bs, emb_dim)
+     t is of shape (bs)
+     step is int
+     index is index in the list
+     repeat noise specifies whether the noise should be same for all samples in the batch
+     temperature: random noise gets multiplied by this
+     """
+     e_t = self.get_eps(x, t, c, uncond_scale=uncond_scale, uncond_cond=uncond_cond)
+     x_prev, x_0 = self.get_x_prev_and_pred_x_0(e_t, index, x, temperature=temperature, repeat_noise=repeat_noise)
+     return x_prev, x_0, e_t
+  
+   def get_x_prev_and_pred_x_0(self, e_t: torch.Tensor, index: int , x: torch.Tensor, temperature: float, repeat_noise: bool):
+     alpha = self.ddim_alpha[index]
+     alpha_prev = self.ddim_alpha_prev[index]
+     sigma = self.ddim_sigma[index]
+     sqrt_one_minus_alpha = self.ddim_sqrt_one_minus_alpha[index]
+     
+                                        
+                                        
