@@ -36,8 +36,6 @@ class InPaint:
     assert 0. <= strength <= 1., "can only work with strength in (0.0, 1.0)"
     t_index = int(strength * self.ddim_steps)
     
-      
-    
     with torch.cuda.amp.autocast():
       if uncond_scale != 1:
         un_cond = self.model.get_text_conditioning(batch_size * [""]) # empty string
