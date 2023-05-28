@@ -53,7 +53,7 @@ class InPaint:
         
 def main():
   parser = argparse.ArgumentParser()
-  parser.add_argument("--prompt", type=str, nargs="?", default="a painting of a virus monster playing guitar", help="The prompt to render")
+  parser.add_argument("--prompt", type=str, nargs="?", default="a painting of a cute monkey playing guitar", help="The prompt to render")
   parser.add_argumnet("--orig_img", type=str, nargs="?", help="path to the imput image")
   parser.add_argument("--batch_size", type=int, default=4, help="batch size")
   parser.add_argument("--steps", type=int, default=50, help="number of sampling steps")
