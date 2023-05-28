@@ -64,5 +64,17 @@ class DDIMSampler(DiffusionSampler):
      sigma = self.ddim_sigma[index]
      sqrt_one_minus_alpha = self.ddim_sqrt_one_minus_alpha[index]
      
+     pred_x0 =  (x - sqrt_one_minus_alpha * e_t) / (alpha ** .5) #current prediction
+     dir_xt = (1. - alpha_prev - sigma ** 2).sqrt() * e_t # direction pointing to xt
+     if sigma = 0:
+      noise = 0
+     elif repeat_noise:
+      noise = torch.randn((1, *x.shape[1:]), device=x.device) # (1, bs, c, h, w)
+     else:
+      noise = torch.randn(x.shape, device=x.device)
+     noise = noise * temperature
+     x_prev = (alpha_prev ** 0.5) * pred_x0 + dir_xt + sigma * noise
+     return x_prev, pred_x0
+     
                                         
                                         
