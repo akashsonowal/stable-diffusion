@@ -23,4 +23,7 @@ class DDIMSampler(DiffusionSampler):
     
     with torch.no_grad():
       alpha_bar = self.model.alpha_bar
+      self.ddim_alpha = alpha_bar[self.time_steps].clone().to(torch.float32)
+      self.ddim_alpha_sqrt = torch.sqrt(self.ddim_alpha)
+      
       
