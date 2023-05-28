@@ -20,3 +20,7 @@ class DDIMSampler(DiffusionSampler):
       self.time_steps = ((np.linspace(0, np.sqrt(self.n_steps * .8), n_steps))**2).astype(int) + 1
     else:
       raise NotImplementedError(ddim_discretize)
+    
+    with torch.no_grad():
+      alpha_bar = self.model.alpha_bar
+      
