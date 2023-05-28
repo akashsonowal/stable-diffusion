@@ -9,7 +9,7 @@ class DiffusionSampler:
     self.model = model
     self.n_steps = model.n_steps
     
-  def get_eps():
+  def get_eps(self, x: torch.Tensor, t: torch.Tensor, c: torch.Tensor, *, uncond_scale: float, uncond_cond:Optional[torch.Tensor]):
     
     return e_t
   
