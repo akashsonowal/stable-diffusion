@@ -30,6 +30,12 @@ class InPaint:
       mask[:, :, mask.shape[2] // 2, :] = 1. # preserve the bottom half of the image
     else:
       mask = mask.to(self.device)
+    
+    orig_noise = torch.randn(orig.shape, device=self.device)
+    
+    assert 0. <= strength <= 1., "can only work with strength in (0.0, 1.0)"
+    t_index = int(strength * self.ddim_steps)
+    
       
     
     with torch.cuda.amp.autocast():
