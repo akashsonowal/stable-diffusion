@@ -10,7 +10,8 @@ class DiffusionSampler:
     self.n_steps = model.n_steps
     
   def get_eps():
-    pass
+    
+    return e_t
   
   def sample():
     pass
