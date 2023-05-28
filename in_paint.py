@@ -27,7 +27,7 @@ class InPaint:
     
     if mask is None:
       mask = torch.zeros_like(orig, device=self.device)
-      mask[:, :, mask.shape[2] // 2, :] = 1.
+      mask[:, :, mask.shape[2] // 2, :] = 1. # preserve the bottom half of the image
     else:
       mask = mask.to(self.device)
       
