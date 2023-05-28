@@ -9,10 +9,7 @@ from stable_diffusion.sampler.ddim import DDIMSampler
 from stable_diffusion.util import load_model, save_images, load_img, set_seed
 
 class Img2Img:
-  model: LatentDiffusion
-  sampler: DiffusionSampler
-  
-  def __init__(self, checkpoint_path: Path, ddim_steps: int = 50, ddim_eta: float = 0.0): 
+  def __init__(self, *, checkpoint_path: Path, ddim_steps: int = 50, ddim_eta: float = 0.0): 
     self.ddim_steps = ddim_steps
     self.model = load_model(checkpoint_path)
     self.device = torch.device("cuda:0") if torch.cuda.is_available() else torch.device("cpu")
@@ -20,7 +17,7 @@ class Img2Img:
     self.sampler = DDIMSampler(self.model, n_steps=n_steps, ddim_eta=ddim_eta)
   
   @torch.no_grad()
-  def __call__(self, *, dest_path: str, orig_img: str, strength: float, batch_size: int = 3, prompt: str, uncond_scale: float = 7.5, mask: Optional[torch.Tensor] = None):
+  def __call__(self, *, dest_path: str, orig_img: str, strength: float, batch_size: int = 3, prompt: str, uncond_scale: float = 3.0):
     prompts = batch_size * [prompt]
     orig_image = load_img(orig_img).to(self.device)
     orig = self.model.autoencoder_encode(orig_image).repeat(batch_size, 1, 1, 1)
