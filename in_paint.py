@@ -11,6 +11,7 @@ from stable_diffusion.util import load_model, save_images, set_seed
 
 class Text2Img:
   model: LatentDiffusion
+  sampler: DiffusionSampler
   
   def __init__(self, checkpoint_path: Path, sampler_name: str, n_steps: int = 50, ddim_eta: float = 0.0):
     self.model = load_model(checkpoint_path)
