@@ -64,7 +64,7 @@ class DDIMSampler(DiffusionSampler):
      sigma = self.ddim_sigma[index]
      sqrt_one_minus_alpha = self.ddim_sqrt_one_minus_alpha[index]
      
-     pred_x0 =  (x - sqrt_one_minus_alpha * e_t) / (alpha ** .5) #current prediction
+     pred_x0 =  (x - sqrt_one_minus_alpha * e_t) / (alpha ** .5) # current prediction
      dir_xt = (1. - alpha_prev - sigma ** 2).sqrt() * e_t # direction pointing to xt
      if sigma = 0:
       noise = 0
@@ -84,5 +84,15 @@ class DDIMSampler(DiffusionSampler):
    
    @torch.no_grad()
    def paint(self, x: torch.Tensor, cond: torch.Tensor, t_start: int, *, orig: Optional[torch.Tensor] = None, mask: Optional[torch.Tensor] = None, orig_noise: Optional[torch.Tensor] = None, uncond_scale: float = 1., uncond_cond: Optional[torch.Tensor] = None):
-      pass                              
-                                       
+      bs = x.shape[0]
+      time_steps = np.flip(self.time_steps[:t_start])
+      
+      for i, step in enumerate(time_steps):
+        index = len(time_steps) - i - 1
+        ts = x.new_full((bs,), step, dtype=torch.long)
+        x, _, _ = self.p_sample(x, cond, ts, step, index=index, uncond_scale=uncond_scale, uncond_cond=uncond_cond)
+        if orig is not None:
+          orig_t = self.q_sample(orig, index, noise=orig_noise)
+          x = orig_t * mask + x * ( 1 - mask)          
+                                        
+      return x                                  
