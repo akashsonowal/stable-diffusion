@@ -29,16 +29,16 @@ class DDIMSampler(DiffusionSampler):
       self.ddim_sigma = (ddim_eta * ((1 - self.ddim_alpha_prev) / (1 - self.ddim_alpha) * (1 - self.ddim_alpha / self.ddim_alpha_prev))**.5)
       self.ddim_sqrt_one_minus_alpha = (1. - self.ddim_alpha) ** .5
       
-    @torch.no_grad()
-    def sample(self, shape: List[int], cond: torch.Tensor, repeat_noise: bool = False, temperature: float = 1., x_last: Optional[torch.Tensor] = None, uncond_scale: float = 1., uncond_cond: Optional[torch.Tensor] = None, skip_steps: int = 0):
-      """shape is (bs, c, h, w)""""
-      device = self.model.device
-      bs = shape[0]
-      x = x_last if x_last is not None alse torch.randn(shape, device=device)
-                                        
-      time_steps = np.flip(self.time_steps)[skip_steps:] # S-i, S-i-1, ....1
-      for i, step in enumerate(time_steps):
-        index = len(time_steps) - i - 1 # time: 1, 2, 3, ..., S
-        ts = x.new_full((bs,), step, dtype=torch.long) # the size is bs and is filled with the step value 
-        x, pred_x0. e_t = self.p_sample(x, cond, ts, step, index=index, repeat_noise=repeat_noise, temperature=temperature, uncond_scale=uncond_scale, uncond_cond=uncond_cond)
-      return x
+  @torch.no_grad()
+  def sample(self, shape: List[int], cond: torch.Tensor, repeat_noise: bool = False, temperature: float = 1., x_last: Optional[torch.Tensor] = None, uncond_scale: float = 1., uncond_cond: Optional[torch.Tensor] = None, skip_steps: int = 0):
+    """shape is (bs, c, h, w)""""
+    device = self.model.device
+    bs = shape[0]
+    x = x_last if x_last is not None alse torch.randn(shape, device=device)
+
+    time_steps = np.flip(self.time_steps)[skip_steps:] # S-i, S-i-1, ....1
+    for i, step in enumerate(time_steps):
+      index = len(time_steps) - i - 1 # time: 1, 2, 3, ..., S
+      ts = x.new_full((bs,), step, dtype=torch.long) # the size is bs and is filled with the step value 
+      x, pred_x0. e_t = self.p_sample(x, cond, ts, step, index=index, repeat_noise=repeat_noise, temperature=temperature, uncond_scale=uncond_scale, uncond_cond=uncond_cond)
+    return x
