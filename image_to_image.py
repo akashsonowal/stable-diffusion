@@ -17,7 +17,7 @@ class Img2Img:
     self.sampler = DDIMSampler(self.model, n_steps=n_steps, ddim_eta=ddim_eta)
   
   @torch.no_grad()
-  def __call__(self, *, dest_path: str, orig_img: str, strength: float, batch_size: int = 3, prompt: str, uncond_scale: float = 3.0):
+  def __call__(self, *, dest_path: str, orig_img: str, strength: float, batch_size: int = 3, prompt: str, uncond_scale: float = 5.0):
     prompts = batch_size * [prompt]
     orig_image = load_img(orig_img).to(self.device)
     orig = self.model.autoencoder_encode(orig_image).repeat(batch_size, 1, 1, 1)
