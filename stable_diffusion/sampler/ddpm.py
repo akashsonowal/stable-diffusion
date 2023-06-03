@@ -19,5 +19,11 @@ class DDPMSampler(DiffusionSampler):
       self.sqrt_alpha_bar = alpha_bar ** .5
       self.sqrt_1m_alpha_bar = (1. - alpha_bar) ** .5
       self.recip_alpha_bar = alpha_bar ** -.5
-      
-
+  
+  @torch.no_grad()
+  def p_sample(self):
+    pass 
+  
+  @torch.no_grad()
+  def q_sample(self):
+    pass
