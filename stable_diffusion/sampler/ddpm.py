@@ -47,9 +47,26 @@ class DDPMSampler(DiffusionSampler):
     x0 = sqrt_recip_alpha_bar * x - sqrt_recip_m1_alpha_bar * e_t 
 
     mean_x0_coef = x.new_fill((bs, 1, 1, 1), self.mean_x0_coeff[step])
-     
-    pass 
+    mean_xt_coef = x.new_fill((bs, 1, 1, 1), self.mean_xt_coeff[step])
+
+    mean = mean_x0_coef * x0 + mean_xt_coef * x 
+
+    log_var = x.new_fill((bs, 1, 1, 1), self.log_var[step])
+
+    if step == 0:
+      noise = 0
+    elif repeat_noise:
+      noise = torch.randn((1, *x.shape[1:]))
+    else:
+      noise = torch.randn(x.shape)
+
+    noise = noise * temperature
+    x_prev = mean + (0.5 * log_var).exp() * noise
+    return x_prev, x0, e_t 
   
   @torch.no_grad()
-  def q_sample(self):
-    pass
+  def q_sample(self, x0: torch.Tensor, index: int, noise: Optional[torch.Tensor] = None):
+    if noise is None:
+      noise = torch.randn_like(x0)
+    
+    return self.sqrt_alpha_bar[index] * x0 + self.sqrt_1m_alpha_bar[index] * noise  
