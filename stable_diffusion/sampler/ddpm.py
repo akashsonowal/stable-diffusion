@@ -15,6 +15,8 @@ class DDPMSampler(DiffusionSampler):
     with torch.no_grad():
       alpha_bar = self.model.alpha_bar
       beta = self.model.beta
-      alpha_bar_prev = torch.cat()
-
+      alpha_bar_prev = torch.cat([alpha_bar.new_tensor([1.], alpha_bar[:-1])])
+      self.sqrt_alpha_bar = alpha_bar ** .5
+      self.sqrt_1m_alpha_bar = (1. - self.sqrt_alpha_bar) ** .5
+      self.recip_alpha_bar = self.sqrt_alpha_bar ** -.5
 
