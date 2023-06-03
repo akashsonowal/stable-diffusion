@@ -38,7 +38,14 @@ class DDPMSampler(DiffusionSampler):
       return x
   
   @torch.no_grad()
-  def p_sample(self):
+  def p_sample(self, x: torch.Tensor, cond: torch.Tensor, t: torch.Tensor, step: int, repeat_noise: bool = False, temperature: float = 1., uncond_scale: float = 1., uncond_cond: Optional[torch.Tensor] = None):
+    e_t = self.get_eps(x, t, c, uncond_scale, uncond_cond)
+    bs = x.shape[0]
+    sqrt_recip_alpha_bar = x.new_full((bs, 1, 1, 1), self.sqrt_recip_alpha_bar[step])
+    sqrt_recip_m1_alpha_bar = x.new_full((bs, 1, 1, 1), self.sqrt_recip_m1_alpha_bar[step])
+
+    x0 = sqrt_recip_alpha_bar * x - sqrt_recip_m1_alpha_bar * e_t 
+
     pass 
   
   @torch.no_grad()
