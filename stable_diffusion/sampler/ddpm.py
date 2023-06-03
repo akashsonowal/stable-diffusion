@@ -46,6 +46,8 @@ class DDPMSampler(DiffusionSampler):
 
     x0 = sqrt_recip_alpha_bar * x - sqrt_recip_m1_alpha_bar * e_t 
 
+    mean_x0_coef = x.new_fill((bs, 1, 1, 1), self.mean_x0_coeff[step])
+     
     pass 
   
   @torch.no_grad()
