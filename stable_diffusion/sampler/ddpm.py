@@ -8,3 +8,8 @@ from stable_diffusion.sampler import DiffusionSampler
 
 class DDPMSampler(DiffusionSampler):
   model: LatentDiffusion
+
+  def __init__(self, model: LatentDiffusion):
+    super().__init__(model)
+    self.time_steps = np.asarray()
+
