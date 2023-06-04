@@ -158,9 +158,7 @@ class AttnBlock(nn.Module):
 
         attn = torch.einsum("bci, bcj -> bij", q, k) * self.scale
         attn = F.softmax(attn, dim=2)
-
         out = torch.einsum("bij, bcj -> bci", attn, v)
-
         out = out.view(b, c, h, w)
         out = self.proj_out(out)
         return x + out
