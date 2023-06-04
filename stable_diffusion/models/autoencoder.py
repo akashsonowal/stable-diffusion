@@ -74,6 +74,11 @@ class Encoder(nn.Module):
         return x
 
 class Decoder(nn.Module):
+
+    def __init__(self, *, channels: int, channel_multipliers: List[int], n_resnet_blocks: int, out_channels: int, z_channels: int):
+        super().__init__()
+        num_resolutions = len(channel_multipliers)
+        
     pass 
 
 class GaussianDistribution(nn.Module):
