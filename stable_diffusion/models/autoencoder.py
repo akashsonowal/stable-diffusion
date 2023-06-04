@@ -48,7 +48,13 @@ class Encoder(nn.Module):
                 x = block(x)
 
             x = down.downsample(x)
-            
+
+        x = self.mid.block_1(x)
+        x = self.mid.attn_1(x)
+        x = self.mid.block_2(x)
+
+        x = self.norm_out(x) 
+        x = swish(x)
         x = self.conv_out(x)
         return x
 
