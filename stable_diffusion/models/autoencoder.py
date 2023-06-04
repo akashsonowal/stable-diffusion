@@ -182,7 +182,31 @@ class DownSample(nn.Module):
         return self.conv(x)
 
 class ResNetBlock(nn.Module):
-    pass 
+    def __init__(self, in_channels: int, out_channels: int):
+        super().__init__()
+        self.norm1 = normalization(channels)
+        self.conv1 = nn.Conv2d(in_channels, out_channels, 3, stride=1, padding=1)
+
+        self.norm2 = normalization(channels)
+        self.conv2 = nn.Conv2d(out_channels, out_channels, 3, stride=1, padding=1)
+
+        if in_channels != out_channels: # in_channels to out_channels mapping in residual connection
+            self.nin_shortcut = nn.Conv2d(in_channels, out_channels, 1, stride=1, padding=0)
+        else:
+            self.nin_shortcut = nn.Identity()
+    
+    def forward(self, x: torch.Tensor):
+        h = x
+        h = self.norm1(h)
+        h = swish(h)
+        h = self.conv1(h)
+
+        h = self.norm2(h)
+        h = swish(h)
+        h = self.conv2(h)
+
+        return self.nin_shortcut(x) + h
+
 
 def swish(x: torch.Tensor):
     return x * torch.sigmoid(x) 
