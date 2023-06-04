@@ -34,7 +34,7 @@ class DDIMSampler(DiffusionSampler):
     """shape is (bs, c, h, w)""""
     device = self.model.device
     bs = shape[0]
-    x = x_last if x_last is not None alse torch.randn(shape, device=device)
+    x = x_last if x_last is not None else torch.randn(shape, device=device)
 
     time_steps = np.flip(self.time_steps)[skip_steps:] # S-i, S-i-1, ....1
     for i, step in enumerate(time_steps):
