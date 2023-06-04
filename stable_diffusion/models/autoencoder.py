@@ -164,10 +164,22 @@ class AttnBlock(nn.Module):
         return x + out
 
 class UpSample(nn.Module):
-    pass 
+    def __init__(self, channels: int):
+        super().__init__()
+        self.conv = nn.Conv2d(channels, channels, 3, padding=1)
+    
+    def forward(self, x: torch.Tensor):
+        x = F.interpolate(x, scale_factor=2.0, mode="nearest")
+        return self.conv(x)
 
 class DownSample(nn.Module):
-    pass 
+    def __init__(self, channels: int):
+        super().__init__()
+        self.conv = nn.Conv2d(channels, channels, 3, stride=2, padding=0)
+    
+    def forward(self, x: torch.Tensor):
+        x = F.pad(x, (0, 1, 0, 1), mode="constant", value=0)
+        return self.conv(x)
 
 class ResNetBlock(nn.Module):
     pass 
