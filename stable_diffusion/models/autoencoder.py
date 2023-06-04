@@ -30,13 +30,22 @@ class Encoder(nn.Module):
         channels_list = [m * channels for m in [1] + channels_multipliers]
 
         self.down = nn.ModuleList()
-
         for i in range(n_resolutions):
             resnet_blocks = nn.ModuleList()
 
             for _ in range(n_resnet_blocks):
                 resnet_blocks.append(ResNetBlock(channels, channels_list[i + 1]))
                 channels = channels_list[i + 1]
+            
+            down = nn.Module()
+            down.block = resnet_blocks
+
+            if i != n_resolutions - 1:
+                down.downsample = DownSample(channels)
+            else:
+                down.downsample = nn.Identity()
+            
+            self.down.append(down)
 
         self.mid = nn.Module()
         self.mid.block_1 = ResNetBlock(channels, channels)
@@ -67,7 +76,16 @@ class Decoder(nn.Module):
     pass 
 
 class GaussianDistribution(nn.Module):
-    pass 
+    """
+    parameters are the means and log of variances of the embedding of shape [batch_size, z_channels * 2, z_height, z_height]
+    """
+    def __init__(self, parameters: torch.Tensor):
+        self.mean, log_var = torch.chunk(parameters, 2, dim=1)
+        self.log_var = torch.clamp(log_var, -30.0, 20.0)
+        self.std = torch.exp(0.5 * self.log_var)
+    
+    def sample(self):
+        return self.mean + self.std * torch.randn_like(self.std)
 
 class AttnBlock(nn.Module):
     pass 
