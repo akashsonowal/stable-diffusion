@@ -136,7 +136,19 @@ class GaussianDistribution(nn.Module):
         return self.mean + self.std * torch.randn_like(self.std)
 
 class AttnBlock(nn.Module):
-    pass 
+    def __init__(self, channels: int):
+        super().__init__()
+        self.norm = normalization(channels)
+        self.q = nn.Conv2d(channels, channels, 1)
+        self.k = nn.Conv2d(channels, channels, 1)
+        self.v = nn.Conv2d(channels, channels, 1)
+        self.proj_out = nn.Conv2d(channels, channels, 1)
+        self.scale = channels ** -0.5
+
+    def forward(self, x: torch.Tensor):
+        x_norm = self.norm(x)
+        
+
 
 class UpSample(nn.Module):
     pass 
