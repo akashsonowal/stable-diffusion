@@ -78,7 +78,15 @@ class Decoder(nn.Module):
     def __init__(self, *, channels: int, channel_multipliers: List[int], n_resnet_blocks: int, out_channels: int, z_channels: int):
         super().__init__()
         num_resolutions = len(channel_multipliers)
+        channel_list = [m * channels for m in channel_multipliers]
+
+        channels = channel_list[-1]
+
+        self.conv_in = nn.Conv2d(z_channels, channels, 3, stride=1, padding=1)
+
+        self.mid = nn.Module()
         
+
     pass 
 
 class GaussianDistribution(nn.Module):
