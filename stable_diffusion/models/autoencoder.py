@@ -38,6 +38,11 @@ class Encoder(nn.Module):
                 resnet_blocks.append(ResNetBlock(channels, channels_list[i + 1]))
                 channels = channels_list[i + 1]
 
+        self.mid = nn.Module()
+        self.mid.block_1 = ResNetBlock(channels, channels)
+        self.mid.attn_1 = AttnBlock(channels)
+        self.mid.block_2 = ResNetBlock(channels, channels)
+        self.norm_out = normalization(channels)
         self.conv_out = nn.Conv2d(channels, 2*z_channels, 3, stride=1, padding=1)
     
     def forward(self, img: torch.Tensor):
