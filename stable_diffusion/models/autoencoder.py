@@ -19,8 +19,9 @@ class AutoEncoder(nn.Module):
         moments = self.quant_conv(z)
         return GaussianDistribution(moments)
     
-    def decode():
-        pass
+    def decode(self, z: torch.Tensor):
+        z = self.post_quant_conv(z)
+        return self.decoder(z)
     
 class Encoder(nn.Module):
     def __init__(self, *, channels: int, channels_multipliers: List[int], n_resnet_blocks: int, in_channels: int, z_channels: int):
