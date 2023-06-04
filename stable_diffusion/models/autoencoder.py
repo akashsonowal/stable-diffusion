@@ -41,6 +41,14 @@ class Encoder(nn.Module):
         self.conv_out = nn.Conv2d(channels, 2*z_channels, 3, stride=1, padding=1)
     
     def forward(self, img: torch.Tensor):
+        x = self.conv_in(img)
+
+        for down in self.down:
+            for block in down.block:
+                x = block(x)
+
+            x = down.downsample(x)
+            
         x = self.conv_out(x)
         return x
 
