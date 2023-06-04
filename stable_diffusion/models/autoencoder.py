@@ -85,7 +85,28 @@ class Decoder(nn.Module):
         self.conv_in = nn.Conv2d(z_channels, channels, 3, stride=1, padding=1)
 
         self.mid = nn.Module()
+        self.mid.block_1 = ResNetBlock(channels, channels)
+        self.mid.attn_1 = AttnBlock(channels)
+        self.mid.block_2 = ResNetBlock(channels, channels)
 
+        self.up = nn.ModuleList()
+
+        for i in reversed(range(num_resolutions)):
+            resnet_blocks = nn.ModuleList()
+
+            for _  in range(n_resnet_blocks + 1):
+                resnet_blocks.append(ResNetBlock(channels, channel_list[i]))
+                channels = channel_list[i]
+
+            up = nn.Module()
+            up.block = resnet_blocks
+
+            if i!=0:
+                up.upsample = UpSample(channels)
+            else:
+                up.upsample = nn.Identity()
+            
+            self.up.insert(0, up)
         
         self.norm_out = normalization(channels)
         self.conv_out = nn.Conv2d(channels, out_channels, 3, stride=1, padding=1)
