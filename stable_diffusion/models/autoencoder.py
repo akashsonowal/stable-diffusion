@@ -85,9 +85,22 @@ class Decoder(nn.Module):
         self.conv_in = nn.Conv2d(z_channels, channels, 3, stride=1, padding=1)
 
         self.mid = nn.Module()
-        
 
-    pass 
+        
+        self.norm_out = normalization(channels)
+        self.conv_out = nn.Conv2d(channels, out_channels, 3, stride=1, padding=1)
+
+    def forward(self, z: torch.Tensor):
+        h = self.conv_in(z)
+        
+        h = self.mid.block_1(h)
+        h = self.mid.attn_1(h)
+        h = self.mid.block_2(h)
+        h = self.norm_out(h)
+        h = swish(h)
+        img = self.conv_out(h)
+        return img
+
 
 class GaussianDistribution(nn.Module):
     """
