@@ -21,8 +21,10 @@ class UNetModel(nn.Module):
         )
 
         self.input_blocks = nn.ModuleList()
-        
 
+class TimeStepEmbedSequential(nn.Sequential):
+    def forward(self):
+        pass
 
 class UpSample(nn.Module):
     pass  
