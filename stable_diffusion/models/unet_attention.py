@@ -7,6 +7,13 @@ from torch import nn
 class SpatialTransformer(nn.Module):
     def __init__(self, channels: int, n_heads: int, n_layers: int, d_cond: int):
         super().__init__()
+    
+    def forward(self, x: torch.Tensor, cond: torch.Tensor):
+        """
+        x: [batch_size, channels, height, width]
+        cond: [batch_size, n_cond, d_cond]
+        """
+        pass
 
 class BasicTransformerBlock(nn.Module):
     pass 
