@@ -9,13 +9,13 @@ import torch.nn.functional as F
 from .unet_attention import SpatialTransformer
 
 class UNetModel(nn.Module):
-    def __init__(self, in_channels, out_channels, channels, n_res_blocks, attention_levels, channel_multipliers, n_heads, tf_layers: int = 1, d_cond: int = 768):
+    def __init__(self, in_channels: int, out_channels: int, channels: int, n_res_blocks: int, attention_levels: List[int], channel_multipliers: List[int], n_heads, tf_layers: int = 1, d_cond: int = 768):
         super().__init__()
         self,channels = channels
         levels = len(channel_multipliers)
         d_time_emb = channels * 4
         self.time_embed = nn.Sequential()
-        
+
 
 class UpSample(nn.Module):
     pass  
