@@ -13,7 +13,9 @@ class SpatialTransformer(nn.Module):
         x: [batch_size, channels, height, width]
         cond: [batch_size, n_cond, d_cond]
         """
-        pass
+        b, c, h, w = x.shape
+        x_in = x
+        
 
 class BasicTransformerBlock(nn.Module):
     pass 
