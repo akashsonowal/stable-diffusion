@@ -39,8 +39,8 @@ class GroupNorm32(nn.GroupNorm):
     def forward(self, x):
         return super().forward(x.float()).type(x.dtype)
 
-def normalization():
-    pass 
+def normalization(channels):
+    return GroupNorm32(32, channels) # 32 groups
 
 def _test_time_embeddings():
     import matplotlib.pyplot as plt
