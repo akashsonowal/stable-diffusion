@@ -30,7 +30,12 @@ class UpSample(nn.Module):
     pass  
 
 class DownSample(nn.Module):
-    pass 
+    def __init__(self, channels: int):
+        super().__init__()
+        self.op = nn.Conv2d(channels, channels, 3, stride=2, padding=1)
+    
+    def forward(self, x: torch.Tensor):
+        return self.op(x)
 
 class ResBlock(nn.Module):
     def __init__(self, channels: int, d_t_emb: int, *, out_channels=None):
