@@ -33,7 +33,7 @@ class DownSample(nn.Module):
     pass 
 
 class ResBlock(nn.Module):
-    def __init__(self):
+    def __init__(self, channels: int, d_t_emb: int, *, out_channels=None):
         super().__init__()
 
         if out_channels is None:
