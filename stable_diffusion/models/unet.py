@@ -33,7 +33,12 @@ class DownSample(nn.Module):
     pass 
 
 class ResBlock(nn.Module):
-    pass 
+    def forward(self, x: torch.Tensor, t_emb: torch.Tensor): # x is of shape (bs, c, h, w); t_emb is of shape (bs, d_t_emb)
+        h = self.in_layers(x) # initial convolutions
+        t_emb = self.emb_layers(t_emb).type(h.dtype)
+        h = h + t_emb[:, :, None, None]
+        h = self.out_layers(h )# final convolutions
+        return self.skip_connection(x) + h
 
 class GroupNorm32(nn.GroupNorm):
     def forward(self, x):
