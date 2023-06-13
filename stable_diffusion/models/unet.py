@@ -33,6 +33,15 @@ class DownSample(nn.Module):
     pass 
 
 class ResBlock(nn.Module):
+    def __init__(self):
+        self.in_layers = None 
+        self.emb_layers = None 
+        self.out_layers = None 
+        if out_channels == channels:
+            self.skip_connection = nn.Identity()
+        else:
+            self.skip_connection = nn.Conv2d(channels, out_channels, 1)
+
     def forward(self, x: torch.Tensor, t_emb: torch.Tensor): # x is of shape (bs, c, h, w); t_emb is of shape (bs, d_t_emb)
         h = self.in_layers(x) # initial convolutions
         t_emb = self.emb_layers(t_emb).type(h.dtype)
