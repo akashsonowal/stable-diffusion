@@ -213,6 +213,3 @@ def swish(x: torch.Tensor):
 
 def normalization():
     return nn.GroupNorm(num_groups=32, num_channels=channels, eps=1e-6)
-
-
-
