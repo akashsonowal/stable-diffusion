@@ -27,7 +27,12 @@ class TimeStepEmbedSequential(nn.Sequential):
         pass
 
 class UpSample(nn.Module):
-    pass  
+    def __init__(self, channels: int):
+        super().__init__()
+    
+    def forward(self, x: torch.Tensor):
+        x = F.interpolate(x, scale_factor=2, mode="nearest")
+        return self.conv(x)
 
 class DownSample(nn.Module):
     def __init__(self, channels: int):
