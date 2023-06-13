@@ -42,7 +42,14 @@ def normalization():
     pass 
 
 def _test_time_embeddings():
-    pass 
+    import matplotlib.pyplot as plt
+    plt.figure(figsize=(15, 5))
+    m = UNetModel(in_channels=1, out_channels=1, channels=320, n_res_blocks=1, attention_levels=[], channel_multipliers=[], n_heads=1, tf_layers=1, d_cond=1)
+    te = m.time_step_embedding(torch.arange(0, 1000))
+    plt.plot(np.arange(1000), te[:, [50, 100, 190, 260]].numpy())
+    plt.legend(["dim %d" %p for p in [50, 100, 190, 260]])
+    plt.title("Time embeddings")
+    plt.show()
 
 if __name__ == "__main__":
     _test_time_embeddings()
