@@ -24,7 +24,14 @@ class UNetModel(nn.Module):
 
 class TimeStepEmbedSequential(nn.Sequential):
     def forward(self, x, t_emb, cond=None):
-        pass
+        for layer in self:
+            if isinstance(layer, ResBlock):
+                x = layer(x, t_emb)
+            elif isinstance(layer, SpatialTransformer):
+                x = layer(x, cond)
+            else:
+                x = layer(x)
+        return x
 
 class UpSample(nn.Module):
     def __init__(self, channels: int):
