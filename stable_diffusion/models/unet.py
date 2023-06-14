@@ -22,6 +22,14 @@ class UNetModel(nn.Module):
 
         self.input_blocks = nn.ModuleList()
     
+    def time_step_embeddings(self, time_steps: torch.Tensor, max_steps: int = 10000):
+        """
+        time_steps: (bs, )
+        max_steps for min freq
+        """
+        half = self.channels // 2
+        
+    
     def forward(self, x: torch.Tensor, time_steps: torch.Tensor, cond: torch.Tensor):
         """
         x: (bs, c, h, w)
