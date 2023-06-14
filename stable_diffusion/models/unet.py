@@ -34,7 +34,6 @@ class UNetModel(nn.Module):
         args = time_steps[:, None].float() * frequencies[None]  
         return torch.cat([torch.cos(args), torch.sin(args)], dim=-1)
 
-    
     def forward(self, x: torch.Tensor, time_steps: torch.Tensor, cond: torch.Tensor):
         """
         x: (bs, c, h, w)
