@@ -21,6 +21,30 @@ class UNetModel(nn.Module):
         )
 
         self.input_blocks = nn.ModuleList()
+    
+    def forward(self, x: torch.Tensor, time_steps: torch.Tensor, cond: torch.Tensor):
+        """
+        x: (bs, c, h, w)
+        time_steps: (bs,)
+        cond: (bs, n_cond, d_cond)
+        """
+        x_input_block = [] # store input half for skip connection
+
+        t_emb = self.time_step_embedding(time_steps)
+        t_emb = self.time_-embed(t_emb)
+
+        for module in self.input_blocks:
+            x = module(x, t_emb, cond)
+            x_input_block.append(x)
+        
+        x = self.middle_block(x, t_emb, cond)
+
+        for module in self.output_blocks:
+            x = torch.cat([x, x_input_block.pop()], dim=1)
+            x = module(x, t_emb, cond)
+        
+        return self.out(x)
+
 
 class TimeStepEmbedSequential(nn.Sequential):
     def forward(self, x, t_emb, cond=None):
