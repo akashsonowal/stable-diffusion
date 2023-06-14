@@ -27,8 +27,13 @@ class UNetModel(nn.Module):
         time_steps: (bs, )
         max_steps for min freq
         """
-        half = self.channels // 2
-        
+        half = self.channels // 2 # half the channels are sine and other half is cosine
+        frequencies = torch.exp(
+            math.log(max_steps) * torch.arange(start=0, end=half, dtype=torch.float32) / half
+        ).to(device=time_steps.device)
+        args = time_steps[:, None].float() * frequencies[None]  
+        return torch.cat([torch.cos(args), torch.sin(args)], dim=-1)
+
     
     def forward(self, x: torch.Tensor, time_steps: torch.Tensor, cond: torch.Tensor):
         """
