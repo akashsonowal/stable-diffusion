@@ -16,11 +16,32 @@ class UNetModel(nn.Module):
         d_time_emb = channels * 4
         self.time_embed = nn.Sequential(
             nn.Linear(channels, d_time_emb),
-            nn.SiLu,
+            nn.SiLu(),
             nn.Linear(d_time_emb, d_time_emb)
         )
 
         self.input_blocks = nn.ModuleList()
+        self.input_blocks.append(TimeStepEmbedSequential(nn.Conv2d(in_channels, channels, 3, padding=1)))
+
+        input_block_channels = [channels]
+        channels_list = [channels * m for m in channel_multipliers]
+
+        for i in range(levels):
+            for _ in range(n_res_blocks):
+                layers = [ResBlock(channels, d_time_emb, out_channels=channels_list[i])]
+            
+            if i in attention_levels:
+                layers.append(SpatialTransformer(channels, n_heads, tf_layers, d_cond))
+            
+            self.input_blocks.append(TimeStepEmbedSequential(*layers))
+            input_block_channels.append(channels)
+
+            if i != levels - 1:
+                self.input_blocks.append(TimeStepEmbedSequential(DownSample(channels)))
+                input_block_channels.append(channels)
+
+        self.middle_block = nn.ModuleList([])        
+
     
     def time_step_embedding(self, time_steps: torch.Tensor, max_steps: int = 10000):
         """
