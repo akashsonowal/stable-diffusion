@@ -40,7 +40,7 @@ class UNetModel(nn.Module):
                 self.input_blocks.append(TimeStepEmbedSequential(DownSample(channels)))
                 input_block_channels.append(channels)
 
-        self.middle_block = nn.ModuleList([])        
+        self.output_blocks = nn.ModuleList([])        
 
     
     def time_step_embedding(self, time_steps: torch.Tensor, max_steps: int = 10000):
