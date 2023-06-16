@@ -39,6 +39,7 @@ class UNetModel(nn.Module):
             if i != levels - 1:
                 self.input_blocks.append(TimeStepEmbedSequential(DownSample(channels)))
                 input_block_channels.append(channels)
+
         self.middle_block = TimeStepEmbedSequential(
             ResBlock(channels, d_time_emb),
             SpatialTransformer(channels, n_heads. tf_layers, d_cond),
@@ -55,6 +56,7 @@ class UNetModel(nn.Module):
                 if i != 0 and j == n_res_blocks:
                     layers.append(UpSample(channels))
                 self.output_blocks.append(TimeStepEmbedSequential(*layers))
+                
         self.out = nn.Sequential(normalization(channels), nn.SiLU(), nn.Conv2d(channels, out_channels, 3, padding=1))       
 
     
