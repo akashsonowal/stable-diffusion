@@ -46,7 +46,12 @@ class CrossAttention(nn.Module):
     pass 
 
 class FeedForward(nn.Module):
-    pass 
+    def __init__(self, d_model: int, d_mult: int = 4):
+        super().__init__()
+        
+
+    def forward(self, x: torch.Tensor):
+        pass
 
 class GeGLU(nn.Module):
     def __init__(self, d_in: int, d_out: int):
