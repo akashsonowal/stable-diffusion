@@ -29,9 +29,23 @@ class SpatialTransformer(nn.Module):
         return x + x_in
         
 class BasicTransformerBlock(nn.Module):
-    pass 
+    def __init__(self, d_model: int, n_heads: int, d_head: int, d_cond: int):
+        super().__init__()
+        self.attn1 = CrossAttention(d_model, d_model, n_heads, d_head)
+        self.norm1 = nn.LayerNorm(d_model)
+        self.attn2 = CrossAttention(d_model, d_cond, n_heads, d_head)
+        self.norm2 = nn.LayerNorm(d_model)
+        self.ff = FeedForward(d_model)
+        self.norm3 = nn.LayerNorm(d_model)
+    
+    def forward(self, x: torch.Tensor, cond: torch.Tensor):
+        pass
+
 
 class CrossAttention(nn.Module):
+    pass 
+
+class FeedForward(nn.Module):
     pass 
 
 class GeGLU(nn.Module):
