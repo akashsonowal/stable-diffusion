@@ -47,7 +47,8 @@ class CrossAttention(nn.Module):
     use_flash_attention: bool = False 
 
     def __init__(self, d_model: int, d_Cond: int, n_heads: int, d_head: int, is_inplace: bool = True):
-        pass
+        super().__init__()
+        
 
     def forward(self, x: torch.Tensor, cond: Optional[torch.Tensor] = None):
         has_cond = cond is not None
