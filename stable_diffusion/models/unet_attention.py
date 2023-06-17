@@ -28,7 +28,6 @@ class SpatialTransformer(nn.Module):
         x = self.proj_out(x)
         return x + x_in
         
-
 class BasicTransformerBlock(nn.Module):
     pass 
 
