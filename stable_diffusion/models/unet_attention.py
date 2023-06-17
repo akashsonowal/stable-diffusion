@@ -48,10 +48,14 @@ class CrossAttention(nn.Module):
 class FeedForward(nn.Module):
     def __init__(self, d_model: int, d_mult: int = 4):
         super().__init__()
-        
+        self.net = nn.Sequential(
+            GeGLU(d_model, d_model * d_mult),
+            nn.Dropout(0.),
+            nn.Linear(d_model * d_mult, d_model)
+        )
 
     def forward(self, x: torch.Tensor):
-        pass
+        return self.net(x)
 
 class GeGLU(nn.Module):
     def __init__(self, d_in: int, d_out: int):
