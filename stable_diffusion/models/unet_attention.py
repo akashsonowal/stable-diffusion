@@ -48,6 +48,9 @@ class CrossAttention(nn.Module):
 
     def __init__(self, d_model: int, d_Cond: int, n_heads: int, d_head: int, is_inplace: bool = True):
         super().__init__()
+        self.is_inplace = is_inplace
+        self.n_heads = n_heads
+        self.d_head = d_head 
         
 
     def forward(self, x: torch.Tensor, cond: Optional[torch.Tensor] = None):
