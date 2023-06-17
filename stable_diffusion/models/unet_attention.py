@@ -39,11 +39,19 @@ class BasicTransformerBlock(nn.Module):
         self.norm3 = nn.LayerNorm(d_model)
     
     def forward(self, x: torch.Tensor, cond: torch.Tensor):
-        pass
+        x = self.attn1(self.norm1(x)) + x
+
 
 
 class CrossAttention(nn.Module):
-    pass 
+    use_flash_attention: bool = False 
+
+    def forward(self, x: torch.Tensor, cond: Optional[torch.Tensor] = None):
+        has_cond = cond is not None
+        if not has_cond:
+            has_cond = x 
+        q = self.to_q(x)
+         
 
 class FeedForward(nn.Module):
     def __init__(self, d_model: int, d_mult: int = 4):
