@@ -80,10 +80,10 @@ class CrossAttention(nn.Module):
             return self.normal_attention(q, k, v)
     
     def flash_attention(self, q: torch.Tensor, k: torch.Tensor, v: torch.Tensor):
-        pass 
+        return self.to_out(out)
 
     def normal_attention(self, q: torch.Tensor, k: torch.Tensor, v: torch.Tensor):
-        pass 
+        return self.to_out(out)
 
 class FeedForward(nn.Module):
     def __init__(self, d_model: int, d_mult: int = 4):
