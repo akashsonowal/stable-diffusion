@@ -71,7 +71,19 @@ class CrossAttention(nn.Module):
         if not has_cond:
             has_cond = x 
         q = self.to_q(x)
+        k = self.to_k(cond)
+        v = self.to_v(cond)
 
+        if CrossAttention.use_flash_attention and self.flash is not None and not has_cond and self.d_head <= 128:
+            return self.flash_attention(q, k, v)
+        else:
+            return self.normal_attention(q, k, v)
+    
+    def flash_attention(self, q: torch.Tensor, k: torch.Tensor, v: torch.Tensor):
+        pass 
+
+    def normal_attention(self, q: torch.Tensor, k: torch.Tensor, v: torch.Tensor):
+        pass 
 
 class FeedForward(nn.Module):
     def __init__(self, d_model: int, d_mult: int = 4):
