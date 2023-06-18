@@ -80,6 +80,11 @@ class CrossAttention(nn.Module):
             return self.normal_attention(q, k, v)
     
     def flash_attention(self, q: torch.Tensor, k: torch.Tensor, v: torch.Tensor):
+        batch_size, seq_len, _ = q.shape 
+        qkv = torch.stack((q, k, v), dim=2) # [batch_size, seq_len, 3, n_heads * d_head]
+        qkv = qkv.view(batch_size, seq_len, 3, self.n_heads, self.d_head)
+        
+
         return self.to_out(out)
 
     def normal_attention(self, q: torch.Tensor, k: torch.Tensor, v: torch.Tensor):
